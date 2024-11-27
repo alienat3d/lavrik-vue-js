@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Урок 2 - Директивы </title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script defer src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+	<script defer src="main.js"></script>
+</head>
+
+<body>
+	<hr>
+	<div class="container">
+		<div class="sample">
+			<!-- В директиве "v-on" тот JS код, что мы пропишем в его значении (аналогия с атрибутами тегов в HTML) сработает по тому событию, что мы указали после ":", а вот в других директивах они срабатывают сразу. Кстати, мы можем также указывать через "." модификаторы (например "once" - срабатывает лишь 1 раз или "prevent" отмена стандартного поведения (как e.preventDefault() в Vanilla JS)). -->
+			<!-- "v-bind" позволяет записать динамическое значение в HTML-атрибут. Через ":" запишем название атрибута, например "title" и будем менять его значение динамически. -->
+			<!-- ? Это просто презентация возможностей на примере, но на самом деле для подобных ситуаций используется отдельный элемент экземпляра Vue computed. Его рассмотрим на след. уроке.  -->
+			<!-- ? Для "v-on" и "v-bind" существуют более короткие распространённые формы записи: "@" и ":" -->
+			<!-- <button class="btn btn-primary" @:click="showH2 = !showH2" :title="showH2 ? 'Hide' : 'Show'"> -->
+			<button class="btn btn-primary" v-on:click="showH2 = !showH2" v-bind:title="showH2 ? 'Hide' : 'Show'">
+				Toggle header
+			</button>
+			<hr>
+			<!-- "v-show" — самая простая из директив и принимает булево значение, но вместо того, чтобы указывать его напрямую, мы создали в файле скриптов переменную showH2, где мы указали дефолтное значение false, которое впоследствии будет переключаться в true и обратно по клике на кнопку через "v-on". -->
+			<h2 v-show="showH2">Hello, World!</h2>
+			<hr>
+			<!-- А если мы создадим ещё и кнопку, которая по клику станет генерировать случайные числа, то т.к. элементы связаны между собой через numbers, то числа будут добавляться сразу в вёрстку, а не только в массив. Это достигается через реактивность данных во Vue. Мы работаем на уровне данных, а шаблон автоматически эти данные подхватывает и сразу же рендерит на страницу. -->
+			<button class="btn btn-success" v-on:click="numbers.push(Math.random())">
+				Add number
+			</button>
+			<hr>
+			<ul class="list-group">
+				<!-- Директива "v-for" работает очень похожим образом на обычный цикл и добавляет элементы из массива numbers в вёрстку. -->
+				<li class="list-group-item" v-for="number in numbers">
+					{{ number }}
+				</li>
+			</ul>
+		</div>
+		<hr>
+		<div>
+			<a href="http://js.dmitrylavrik.ru/vue/" target="_blank">Курс по Vue.js</a>
+		</div>
+	</div>
+</body>
+
+</html>
