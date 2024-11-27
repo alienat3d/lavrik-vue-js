@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Урок 1</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+
+<body>
+	<div class="container">
+		<hr>
+		<div class="sample">
+			<input type="text" v-model="name">
+			<hr>
+			<h2>Hello, {{ name }}</h2>
+		</div>
+		<hr>
+		<div class="sample2">
+			<input type="text" v-bind:value="name" v-on:input="name = $event.target.value">
+			<hr>
+			<h2>Hello, {{ name }}</h2>
+		</div>
+		<hr>
+		<div>
+			<a href="http://js.dmitrylavrik.ru/vue/" target="_blank">Курс по Vue.js</a>
+		</div>
+	</div>
+</body>
+
+</html>
