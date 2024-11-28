@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Урок 4 - компоненты</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link href="style.css" rel="stylesheet">
+	<script defer src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+	<script defer src="script.js"></script>
+</head>
+<!-- ? 1.0 Что такое компонент? Компонент это элемент, которого нет в обычно HTML, но который присутствует во фреймворке и мы можем использовать этот компонент в рамках шаблона. -->
+
+<body>
+	<hr>
+	<div class="container">
+		<a href="http://js.dmitrylavrik.ru/vue/" target="_blank">Курс по Vue.js</a>
+	</div>
+	<hr>
+	<div class="container">
+		<div class="sample">
+			<button class="btn btn-primary" v-on:click="showRes = !showRes">
+				{{ btnText }}
+			</button>
+			<hr>
+			<!-- * 3.0 Но, что ещё более круто, мы теперь этот компонент можем использовать где угодно в нашем приложении для разных идей, например создать ещё один прогрессбар, где мы будем отслеживать удачливость игрока, заполняя прогрессбар в зависимости от набранных очков. Значит максимальное количество у нас будет 50 (10 попыток и 5 макс. очков за попытку), а текущее значение это сумма чисел от всех сделанных юзером попыток. -->
+			<app-progress v-bind:val="sum" v-bind:max="maxNumbers * 5">
+			</app-progress>
+			<hr>
+			<!-- 1.1 Компонент, когда используется в рамках шаблона записывается как простой тег. В частности данный компонент будет осуществлять анимацию. И также, как и у других тегов у компонентов могут быть атрибуты. Например, здесь для компонента transition будет важен атрибут "name". Суть этого компонента заключается в том, что он контролирует умную расстановку CSS-классов. В частности, когда он видит "name='slide'", то он будет генерировать CSS-классы "slide-enter", "slide-enter-active" и т.д., расставляя их при этом в правильные моменты времени поочерёдно, благодаря чему происходит собственно сама анимация. -->
+			<!-- 1.2 Как же это происходит? Дело в том, что во Vue зарегистрирован компонент "transition" и он принимает какие-то параметры и реализует JS-функционал. -->
+			<transition name="slide">
+				<h2 v-show="showRes" class="alert alert-success">Your profit: {{ sum }}</h2>
+			</transition>
+			<hr>
+			<!-- 1.3 Попробуем сделать собственный компонент "progressbar", у которого будет следующий функционал: когда юзер добавляет числа, то мы хотим иметь ограничение по кол-ву чисел, например 10, и когда юзер будет добавлять числа, то у него будет расти полоса прогресса. -->
+			<!-- Go to [vue-2-intro\04\script.js] -->
+			<!-- 2.3.1 ... и его мы укажем в вёрстке атрибутом для "max" компонента прогрессбара. Но следует учитывать, что если мы хотим передавать атрибут динамически, то нам нужно использовать директиву "v-bind", иначе это будет воспринято просто как строка. Ну, а значением атрибута "val" будет просто количество элементов уже добавленных в массив "numbers" и также привязанных при помощи "v-bind". -->
+			<!-- Go to [vue-2-intro\04\script.js] -->
+			<app-progress v-bind:val="numbers.length" v-bind:max="maxNumbers">
+			</app-progress>
+			<hr>
+			<!-- 2.6.2 А также здесь используем computed "done", чтобы блокировать кнопку, если оно вернёт true. ↑ -->
+			<button class="btn btn-success" v-on:click="addNumber" v-bind:disabled="done">
+				Add number
+			</button>
+			<hr>
+			<ul class="list-group">
+				<li class="list-group-item" v-for="number in numbers">
+					{{ number }}
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+
+</html>
