@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Урок 2 - шаблон и директивы</title>
+	<script defer src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<script defer src="script.js"></script>
+</head>
+
+<body>
+	<div class="app">
+		<input type="text" v-model="name">
+		<button type="button" @click="name = ''" :disabled="name.length === 0">X</button>
+		<h2>Hello, {{ name }}!</h2>
+	</div>
+</body>
+
+</html>

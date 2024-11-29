@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Урок 1 - идеи фреймворка</title>
+	<script defer src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<script defer src="script.js"></script>
+</head>
+
+<body>
+	<div class="app">
+		<!-- 2.1 А ещё мы можем связать инпут с заголовком с помощью директивы "v-model". И теперь всё введённое в инпут будет отображаться на месте {{name}}. -->
+		<!-- ? На этом примере можно уже увидеть преимущества фреймворка: Мы нигде не меняем свойства узлов DOM, мы не трогаем value input’а, мы не трогаем innerHTML узла, полученного из тега h2, а просто работаем на уровне createApp. В этом и мощь фреймворков, мы можем думать на уровнях данных, а вёрстка является просто отражением того, что происходит с ними. В этой системе всё взаимосвязанно и работает с минимальными усилиями со стороны разработчика. -->
+		<input type="text" v-model="name">
+		<button type="button" @click="name = ''" :disabled="name.length === 0">X</button>
+		<h2>Hello, {{ name }}!</h2>
+	</div>
+</body>
+
+</html>
