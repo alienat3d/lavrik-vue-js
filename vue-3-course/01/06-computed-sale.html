@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Урок 1</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link href="css/styles.css" rel="stylesheet">
+	<script defer src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<script defer src="js/06-script.js"></script>
+</head>
+
+<!-- 3.1 Рассмотрим на примере. Представим, что у нас есть скидка, рассчитываемая в зависимости от промокода. -->
+<!-- 3.2 Нам также необходимо выводить итоговую цену на товар. -->
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<!-- 3.3 Здесь к директиве "v-model" добавим модификатор "lazy", который заменяет v-on:input на v-on:change. Чтобы менялся только при потери фокуса с инпута, а не по каждому набору символа. -->
+			Цена без скидки: {{ price }}<br>
+			Промокод: <input v-model.trim.lazy="promo" type="text">
+			<hr>
+			<!-- 3.7 И теперь мы помимо цены можем также выводить доп. поля, например если есть скидка. -->
+			<div v-if="hasSale">
+				<div class="alert alert-success">Поздравляем! Скидка {{ sale }}% была успешно применена!</div>
+			</div>
+			Итоговая цена: {{ total }}
+		</div>
+	</div>
+</body>
+
+</html>

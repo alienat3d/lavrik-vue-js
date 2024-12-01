@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Урок 1</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link href="css/styles.css" rel="stylesheet">
+	<script defer src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<script defer src="js/04-script.js"></script>
+</head>
+<!-- Пример, когда использование методов такая себе идея. -->
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			Имя: <input v-model.trim="firstName" type="text">
+			Фамилия: <input v-model.trim="lastName" type="text">
+			<hr>
+			<!-- ! Вот так во Vue не делают, считается идеологической ошибкой. Т.к. по смыслу тут должно быть computed свойство, иначе эта функция будет запускать каждый раз, даже когда не будут затронуты firstName & lastName, от которых оно зависит. Проблема в том, что когда метод "fullName" так вот прописан в шаблоне, то будет вызываться даже по клику на кнопку, показывающую сообщение ниже, никак не связанную с заголовком. -->
+			<!-- 1.0 Однако стоит здесь оговориться, что бывают случаи, когда очень хочется не делать два computed поля, а сделать метод, принимающий параметр. Пример: у нас задача рядом с инпутом отображать какой-то значок, обозначающий правильно ли он заполнен или нет. В итоге два однотипных действия для каждого поля. Или другая подобная задача: где-то внизу выводить firstName & lastName заглавными буквами. И по логике Vue, нам стоило бы, конечно, и здесь определить для каждого computed fields, но насколько это лениво, особенно если таких инпутов не 2, а 8. -->
+			<!-- Go to [vue-3-course\01\js\04-script.js] -->
+			<h2>Здравствуй, {{ fullName }}!</h2>
+			<hr>
+			<button @click="showAlert = !showAlert" class="btn btn-success">Toggle Alert</button>
+			<div v-show="showAlert" class="alert alert-danger mt-3">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+				At, beatae!</div>
+			<hr>
+			<!-- 1.2 И здесь использовать метод weirMethod(), в который будем кидать fullName & lastName. Этот странный пример был к том, что даже, если так делать не хочется, но иногда к этому можно прибегнуть, если мы видим, что иначе, например раздуются сильно computed поля. -->
+			<!-- Go to [vue-3-course\01\05-computed.html] -->
+			{{ weirdMethod(firstName) }}
+			{{ weirdMethod(lastName) }}
+		</div>
+	</div>
+</body>
+
+</html>

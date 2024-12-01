@@ -14,11 +14,15 @@
 
 <body>
 	<div class="wrapper">
-		<!-- ? Следует следить за чистотой шаблона, чтобы он сильно не разрастался, пользуясь всеми полями в описании компонента и именованными функциями и вычисляемыми свойствами. -->
 		<div class="sample">
-			<input type="text" :value="name" @input="onInput">
+			Имя: <input v-model.trim="firstName" type="text">
+			Фамилия: <input v-model.trim="lastName" type="text">
 			<hr>
-			<h2>Hello, {{ name }}</h2>
+			<h2>Здравствуй, {{ fullName }}!</h2>
+			<hr>
+			<button @click="showAlert = !showAlert" class="btn btn-success">Toggle Alert</button>
+			<div v-show="showAlert" class="alert alert-danger mt-3">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+				At, beatae!</div>
 		</div>
 	</div>
 </body>

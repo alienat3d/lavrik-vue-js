@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Урок 1</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css"
+		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link href="css/styles.css" rel="stylesheet">
+	<script defer src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<script defer src="js/09-script.js"></script>
+</head>
+
+<!-- 6.1 И вот мы хотим вывести в вёрстку содержимое этого массива numbers. Например, чтобы показывать порядковый номер всех букв алфавита. И на теге, который у нас будет размножаться ставим директиву "v-for" и прописываем "%локальная переменная% in %массив%". Например, v-for="numbers in numbers". Можно также получить и номер текущего итератора записав: v-for="numbers, index in numbers". -->
+<!-- 6.2 Иногда линтер может ругаться, что когда прописан "v-for", то нужно использовать атрибут ":key". В целом это вещь хорошая, но в документации Vue JS нет требования по дефолту ставить его сразу. Но его необходимо ставить тогда, если дочерние компоненты размножаются, либо нам важны операции с сортировками, удаление/добавление элементов из начала или середины списка. В простых ситуациях ":key" можно и не прописывать. -->
+<!-- 6.3 Давайте теперь начнём размноженные циклом элементы контролировать, например сделаем так, что при наведении на элемент он удваивался. -->
+<!-- 6.4 А также мы добавим кнопку, которая будет добавлять новое число в массив, а потом и в вёрстку с помощью метода addNumber. -->
+<!-- 6.7 А теперь попробуем добраться всё таки до размноженных циклом элементов. Для этого повесим обработчик события на li, а дальше поместим в него метод, где в круглые скобки поместим "index", и это отлично сработает. Метод вызовется, принимая в себя параметром "index", а в свою очередь "index" будет привязан к текущей итерации, т.е. номер конкретного элемента. -->
+<!-- Go to [vue-3-course\01\10-cake-price-calc.html] -->
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<button type="button" class="btn btn-primary" @click="addNumber">Add number</button>
+			<ul class="list-group">
+				<li v-for="numbers, index in numbers" :key="numbers" @click="double(index)"
+					class="list-group-item numbers-item">
+					#{{ index }} | {{ numbers }}
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+
+</html>
