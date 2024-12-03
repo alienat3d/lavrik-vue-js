@@ -1,0 +1,9 @@
+.wrapper {
+	padding: 15px;
+	max-width: 900px;
+}
+
+.guest-label {
+	user-select: none;
+	cursor: pointer;
+}

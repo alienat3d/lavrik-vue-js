@@ -24,9 +24,8 @@
 		<div class="sample">
 			<button type="button" class="btn btn-primary" @click="addNumber">Add number</button>
 			<ul class="list-group">
-				<li v-for="numbers, index in numbers" :key="numbers" @click="double(index)"
-					class="list-group-item numbers-item">
-					#{{ index }} | {{ numbers }}
+				<li v-for="number, index in numbers" :key="number" @click="double(index)" class="list-group-item numbers-item">
+					#{{ index }} | {{ number }}
 				</li>
 			</ul>
 		</div>
