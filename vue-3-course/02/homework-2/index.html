@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>1</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link href="styles.css" rel="stylesheet">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<form v-if="!isFormSent">
+				<div @scroll="currentProgress" class="content alert alert-info">
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p>Текст лицензионного соглашения, который обычно никто не читает.</p>
+					<p></p>
+					<p>Поздравляем! Вы прочли до конца текст лицензионного соглашения, который обычно никто не читает. 😏</p>
+				</div>
+				<div class="progress" role="progressbar" aria-label="Прогресс прочтения лицензионного соглашения"
+					aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+					<div class="progress-bar" :style="{ width: currentProgressPos + '%' }"></div>
+				</div>
+				<div class="form-check">
+					<fieldset class="mx-3 mt-4 mb-2">
+						<label class="form-check-label">
+							Согласен(-на) с лицензионным соглашением
+							<input v-model="isAgreed" class="form-check-input" type="checkbox">
+						</label>
+					</fieldset>
+					<fieldset class="mx-3 mb-2">
+						<label class="form-check-label">
+							Хочу получать уведомления о новых акциях и предложениях
+							<input v-model="isPromoInfo" class="form-check-input" type="checkbox">
+						</label>
+						<div v-if="isPromoInfo" class="form-check pt-2">
+							<label class="d-block form-check-label">
+								По электронной почте
+								<input v-model="promoInfoType" class="form-check-input" type="radio" value="Электронная почта (e-mail)">
+							</label>
+							<label class="d-block form-check-label">
+								По телефону (SMS-сообщения)
+								<input v-model="promoInfoType" class="form-check-input" type="radio" value="Телефон (SMS-сообщения)">
+							</label>
+						</div>
+					</fieldset>
+				</div>
+				<hr>
+				<button @click="sendForm" class="btn btn-primary mx-3 mb-3" type="button" :disabled="!checkSendButton">
+					Отправить данные
+				</button>
+			</form>
+			<div v-else>
+				<table class="table table-bordered w-50">
+					<tr>
+						<td>Пользователь согласился с лицензионным соглашением</td>
+						<td class="text-success">Да</td>
+					</tr>
+					<tr>
+						<td>Пользователь согласился получать уведомления о новых акциях и предложениях</td>
+						<td :class="answerColor">{{ isPromoChecked }}</td>
+					</tr>
+					<tr v-if="isPromoInfo">
+						<td>Вид уведомлений выбранный пользователем</td>
+						<td>{{ promoInfoType }}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script>
+		Vue.createApp({
+			data: () => ({
+				isAgreed: false,
+				isPromoInfo: false,
+				isFormSent: false,
+				promoInfoType: '',
+				currentProgressPos: 0
+			}),
+			computed: {
+				isPromoChecked() {
+					return (this.isPromoInfo && this.promoInfoType !== '') ? 'Да' : 'Нет'
+				},
+				answerColor() {
+					return (this.isPromoInfo && this.promoInfoType !== '') ? 'text-success' : 'text-danger'
+				},
+				currentProgress(evt) {
+					return (evt) => this.currentProgressPos = Math.round(evt.target.scrollTop * 100 / 494);
+				},
+				checkSendButton() {
+					return this.isAgreed && this.currentProgressPos === 100
+				}
+			},
+			methods: {
+				sendForm() {
+					this.isFormSent = !this.isFormSent
+				}
+			},
+		}).mount('.sample');
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+label,
+input {
+	user-select: none;
+	cursor: pointer;
+}
+
+.content {
+	height: 300px;
+	overflow: auto;
+}
