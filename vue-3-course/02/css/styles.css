@@ -1,0 +1,12 @@
+.my-success {
+	font-style: italic;
+}
+
+.other-warning {
+	font-weight: bold;
+}
+
+.table-black>:not(caption)>*>* {
+	color: #fff;
+	background-color: #000;
+}

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>1</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link href="css/styles.css" rel="stylesheet">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<style>
+		.transition-mh {
+			transition: min-height 0.5s;
+		}
+	</style>
+</head>
+
+<!-- * 5.0 Здесь мы долго останавливаться не будем, т.к. inline-styles мы задаём крайне редко. Обычно к ним можно прибегнуть тогда, когда нет возможности обойтись классами. Например, если нужно сделать элемент с динамической высотой, который при нажатии как-то увеличивается. -->
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			{{ alertHeight }}
+			<!-- 5.1.2 И ещё есть кнопка, которая увеличивает значение alertHeight на 50px. -->
+			<!-- Go to [vue-3-course\01\10-cake-price-calc\10-cake-price-calc.html] -->
+			<button class="btn btn-danger" @click="alertHeight += 50">++</button>
+			<hr>
+			<div class="alert alert-success transition-mh" :style="alertStyles">
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum architecto voluptatibus delectus odit
+				eveniet magni, laboriosam, eos excepturi adipisci nemo at sint ea quod, sapiente deserunt dolore assumenda vel!
+				Perspiciatis.
+			</div>
+			<table class="table" :style="tableStyles">
+				<tr>
+					<td>Title</td>
+					<td>Some</td>
+					<td>nz</td>
+				</tr>
+				<tr>
+					<td>Title</td>
+					<td>Some</td>
+					<td>nz</td>
+				</tr>
+				<tr>
+					<td>Title</td>
+					<td>Some</td>
+					<td>nz</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<script>
+		Vue.createApp({
+			// 5.1.0 И вот у нас есть поле alertHeight равное 100.
+			data: () => ({
+				alertHeight: 100,
+				tableStyles: {
+					color: '#f90',
+					backgroundColor: '#000',
+					fontSize: '20px'
+				}
+			}),
+			// 5.1.1 И computed поле в котором min-height: this.alertHeight + 'px' ↑
+			computed: {
+				alertStyles() {
+					return {
+						'min-height': this.alertHeight + 'px'
+					}
+				}
+			}
+		}).mount('.sample');
+	</script>
+</body>
+
+</html>

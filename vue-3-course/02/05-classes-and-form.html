@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>1</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link href="css/styles.css" rel="stylesheet">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<!-- * 4.0 Переходим к новой теме «классы». -->
+<!-- 4.1 И вот, допустим, у нас есть задача дать пользователю вариант выбора стиля всплывашки алёрта. Т.е. сделать radio-кнопки, которые динамически переключает по смыслу класс "alert-danger/-success/etc..." -->
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<!-- 4.10 Ну и теперь нам требуется к этому окошку алёрта добавить нужный "alert-..." класс. Мы уже знаем про директиву "v-bind" (":"), которая динамически задаёт атрибут. Это позволит нам задавать классы в виде массива и в виде объекта. И если сюда попадает массив, то будут добавлены все классы из него, а если объект, то ключи будут считаться названиями классов, а их булево значение укажет на то, добавлять их или нет. -->
+			<!-- ? 4.11 Есть следующие варианты задания классов во Vue:
+				class="string"
+				:class="string"
+				:class="[classes]"
+				:class="{a: boolean, b: boolean}"
+				:class=[string, obj, string]
+				На основе этого сделаем computed поле ↓
+			-->
+			<div class="alert" :class="alertClasses">
+				Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+			</div>
+			<!-- 4.2 Нам требуется 3 radio-кнопки в вёрстки для переключения значений на зелёный, оранжевый и красный. У них есть также обязательный атрибут "value". Vue при работе с формами опирается на "v-model", а это как мы помним из первого урока волшебная пара: подписка на событие "input" и изменение "value". ↓ -->
+			<!-- 4.4 Далее мы добавим директиву "v-model", которая будет ссылаться на поле "alertType".  -->
+			<!-- ? 4.5 Обратим здесь внимание, что в отличии от обычного HTML, где нам требовалось бы сгруппировать radio-кнопки с помощью атрибута "name", у которого было бы общее имя, то во Vue нам этого не требуется. -->
+			<!-- 4.6 По сути "v-model" здесь работает чуть по другому, она считывает, что тип инпута "radio" и создаёт примерно следующий синтаксический сахар: <input class="form-check-input" type="radio" value="green" :checked="alertType == 'green'" @change="alertType = 'green'"> Т.е. тут по сути что делает "v-model" оно задаёт checked="true/false" и затем Vue отмечает checked="true", если value значение совпадёт с лежащим в переменной "alertType". -->
+			<!-- 4.7 И всё же для возможной отправки на сервер добавим атрибут "name", хоть для функционала он и не обязателен. -->
+			<!-- ? 4.8.0 А на что же будет распадаться "v-model" по аналогии в теге <select>? (Например, в "Cake builder" [vue-3-course\01\10-cake-price-calc\10-cake-price-calc.html]) Понятно, что слушатель "input/change" события, но также у него есть свойство "selected", а также у него есть "selectedIndex". По сути шаблон рендерится изнутри наружу и "v-model" ждёт, пока появятся все опции селекта и выбрать нужное активное значение, которое находится в значении "v-model", т.е. по сути проходится циклом по массиву с элементами <option> и та опция, которая совпадёт по value со значением "v-model" селекта, то она будет признана активной в данный момент. -->
+			<!-- ? 4.8.1 А если бы это был multiple-select, то в значении был бы массив и все опции, которые в этом массиве оказывались - были бы отмечены. -->
+			<!-- ? 4.9 Кстати, в React JS и близко нет такой удобной работы с формами. Там, если мы не подключаем доп. плагинов, пришлось бы делать это всё вручную: прописывать checked, подписываться на событие "change" и т.д. -->
+			<div class="form-check">
+				<div>
+					<label class="form-check-label">
+						<input class="form-check-input" type="radio" value="green" v-model="alertType" name="alert_type">
+						Green
+					</label>
+				</div>
+				<div>
+					<label class="form-check-label">
+						<input class="form-check-input" type="radio" value="orange" v-model="alertType" name="alert_type">
+						Orange
+					</label>
+				</div>
+				<div>
+					<label class="form-check-label">
+						<input class="form-check-input" type="radio" value="red" v-model="alertType" name="alert_type">
+						Red
+					</label>
+				</div>
+				<div>
+					<label class="form-check-label">
+						<input class="form-check-input" type="radio" value="blue" v-model="alertType" name="alert_type">
+						Blue
+					</label>
+				</div>
+				<div>
+					<label class="form-check-label">
+						<input class="form-check-input" type="radio" value="cyan" v-model="alertType" name="alert_type">
+						Cyan
+					</label>
+				</div>
+				<div>
+					<label class="form-check-label">
+						<input class="form-check-input" type="radio" value="black" v-model="alertType" name="alert_type">
+						Black
+					</label>
+				</div>
+				<div>
+					<label class="form-check-label">
+						<input class="form-check-input" type="radio" value="white" v-model="alertType" name="alert_type">
+						Light Gray
+					</label>
+				</div>
+				<div>
+					<label class="form-check-label">
+						<input class="form-check-input" type="radio" value="dark-gray" v-model="alertType" name="alert_type">
+						Dark Gray
+					</label>
+				</div>
+			</div>
+			<!-- 4.13.2 А также нам пригодятся чекбоксы для включения и выключения этих классов. Дальше мы их отрендерим циклом "v-for", но важно отметить, что значения будут идти на первом месте, а ключи на втором. В принципе атрибут "name" тут не особо нужен, т.к. на сервер ничего не отправляем, но если что, то будет равен ключу. -->
+			<!-- Go to [vue-3-course\02\06-styles.html] -->
+			<div class="form-check">
+				<div v-for="val,key in tableClasses">
+					<label class="form-check-label">
+						<input class="form-check-input" type="checkbox" v-model="tableClasses[key]" :name="key">
+						{{ key }}
+					</label>
+				</div>
+			</div>
+			<hr>
+			<hr>
+			<!-- 4.13.1 А потом добавим его сюда через "v-bind". -->
+			<table class="table" :class="tableClasses">
+				<tr>
+					<td>Title</td>
+					<td>Some</td>
+					<td>nz</td>
+				</tr>
+				<tr>
+					<td>Title</td>
+					<td>Some</td>
+					<td>nz</td>
+				</tr>
+				<tr>
+					<td>Title</td>
+					<td>Some</td>
+					<td>nz</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<script>
+		/*
+			
+		*/
+
+		// 4.3 В "data" создадим связанное с radio-кнопками "alertType" свойство и поместим в него базовое значение "green". ↑
+		const app = Vue.createApp({
+			data: () => ({
+				alertType: 'green',
+				// 4.13.0 Создадим похожий пример с классами для таблицы ↑
+				tableClasses: {
+					'table-hover': false,
+					'table-bordered': false,
+					'table-black': false,
+				}
+			}),
+			// 4.12 Создадим поле для классов алёрта
+			computed: {
+				alertClasses() {
+					return {
+						'alert-success': this.alertType === 'green',
+						'alert-warning': this.alertType === 'orange',
+						'alert-danger': this.alertType === 'red',
+						'alert-primary': this.alertType === 'blue',
+						'alert-info': this.alertType === 'cyan',
+						'alert-secondary': this.alertType === 'black',
+						'alert-light': this.alertType === 'white',
+						'alert-dark': this.alertType === 'dark-gray',
+					}
+				}
+			}
+		})
+
+		app.mount('.sample')
+	</script>
+</body>
+
+</html>
