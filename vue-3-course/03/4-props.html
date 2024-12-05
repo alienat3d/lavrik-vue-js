@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>1</title>
+	<link href="../../vendor/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../../vendor/css/style.css" rel="stylesheet">
+	<script src="../../vendor/js/vue.global.js"></script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<app-some :a="10" :b="'5'" :c="100" f="6432478"></app-some>
+		</div>
+	</div>
+	<script>
+
+		let app = Vue.createApp({});
+
+		app.component('app-some', {
+			template: `
+		<div>
+			<div>{{ a }}</div>
+			<div>{{ b }}</div>
+			<div>{{ c }}</div>
+			<div>{{ d }}</div>
+			<div>{{ e }}</div>
+		</div>
+	`,
+			// ? Здесь может быть также и самописный класс указан или например указать "RegExp".
+			props: {
+				a: Number,
+				b: String,
+				c: {
+					type: Number,
+					required: true // поле может быть обязательным для передачи, в целом любое поле должно быть либо со значением по умолчанию, либо с "required: true", потому, что это логично
+				},
+				d: {
+					type: String,
+					default: "hello!"
+				},
+				e: {
+					type: Object,
+					default() {
+						return {
+							some: 'other'
+						}
+					} // Бывают ситуации, когда нужно прописать дефолтную функцию, потому, что вспоминая одну из прошлых тем: объект это ссылочный тип и в частности почему у Vue компонента data это не просто объект, а функция, которая этот объект возвращает. Во-первых потому, что функция с помощью "this" может дотянуться до пропсов, а во-вторых если data был бы просто объектом, то при размножении компонентов у Vue будет большая проблема, связанная с тем, что этот объект простым присваиванием его каждому экземпляру этого описанного компонента присваивать, то будет общим для всех. И здесь такая же концепция, что если мы сделаем значение по умолчанию с типом "Object", то мы прописываем не просто объект в default’е, а функцию, которая этот объект вернёт.
+				},
+				// Go to [vue-3-course\03\5-todo-without-comp.html]
+				f: {
+					type: String,
+					validator(val) {
+						return /^[1-9][1-9]+$/.test(val);
+					} // может быть самописная функция, возвращающая true или false
+				}
+			}
+		});
+
+		app.mount('.sample');
+
+	</script>
+</body>
+
+</html>
