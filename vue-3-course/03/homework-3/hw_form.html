@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Валидация полей</title>
+	<link rel="stylesheet" href="../../../vendor/css/font-awesome.min.css">
+	<link href="../../../vendor/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../../../vendor/css/style.css" rel="stylesheet">
+	<script src="../../../vendor/js/vue.global.js"></script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<form>
+				<div class="progress">
+					<div class="progress-bar"></div>
+				</div>
+				<div class="my-3">
+					<!-- <div class="form-group" v-for="field,i in info">
+						<label>
+							{{ field.label }}
+							<span v-if="field.activated"
+								:class="field.valid ? 'fa fa-check-circle text-success' : 'fa fa-exclamation-circle text-danger'"></span>
+						</label>
+						<input type="text" class="form-control" :value="field.value" @input="onInput(i, $event.target.value)">
+					</div> -->
+					<app-input label="Фамилия Имя Отчество"></app-input>
+					<app-input label="Номер Телефона"></app-input>
+					<app-input label="Адрес Электронной Почты"></app-input>
+					<app-input label="Любимый Цвет"></app-input>
+					<app-input label="Любимое Животное"></app-input>
+				</div>
+				<button class="btn btn-primary">
+					Отправить Данные
+				</button>
+			</form>
+			<pre>
+				{{ info }}
+			</pre>
+			<div>
+				<table class="table table-bordered">
+					<tr>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script>
+		const AppInput = {
+			props: {
+				label: { type: String, required: true },
+				value: { type: String, default: '' },
+				// info: [
+				// 	{
+				// 		label: 'Name',
+				// 		value: '',
+				// 		pattern: /^[a-zA-Z ]{2,30}$/
+				// 	},
+				// 	{
+				// 		label: 'Phone',
+				// 		value: '',
+				// 		pattern: /^[0-9]{7,14}$/
+				// 	},
+				// 	{
+				// 		label: 'Email',
+				// 		value: '',
+				// 		pattern: /.+/
+				// 	},
+				// 	{
+				// 		label: 'Some Field 1',
+				// 		value: '',
+				// 		pattern: /.+/
+				// 	},
+				// 	{
+				// 		label: 'Some Field 2',
+				// 		value: '',
+				// 		pattern: /.+/
+				// 	}
+				// ]
+			},
+			computed: {
+				/* isValid() {
+					return field.valid ? 'fa fa-check-circle text-success' : 'fa fa-exclamation-circle text-danger'
+				} */
+			},
+			methods: {
+				/* onInput(i, val) {
+					let field = this.info[i];
+					field.value = val.trim();
+					field.activated = true;
+					field.valid = field.pattern.test(field.value);
+				} */
+			},
+			template: `
+				<div class="form-group">
+					<label>
+						{{ label }}
+						<span :class="isValid"></span>
+					</label>
+					<input type="text" class="form-control" :value="value">
+				</div>
+			`
+		}
+
+		Vue.createApp({
+			components: {
+				AppInput
+			},
+			data: () => ({
+				info: [
+					{
+						label: 'Name',
+						value: '',
+						pattern: /^[a-zA-Z ]{2,30}$/
+					},
+					{
+						label: 'Phone',
+						value: '',
+						pattern: /^[0-9]{7,14}$/
+					},
+					{
+						label: 'Email',
+						value: '',
+						pattern: /.+/
+					},
+					{
+						label: 'Some Field 1',
+						value: '',
+						pattern: /.+/
+					},
+					{
+						label: 'Some Field 2',
+						value: '',
+						pattern: /.+/
+					}
+				]
+			}),
+			methods: {
+				/* onInput(i, val) {
+					let field = this.info[i];
+					field.value = val.trim();
+					field.activated = true;
+					field.valid = field.pattern.test(field.value);
+				} */
+			},
+			created() {
+				/* this.info.forEach(field => {
+					field.valid = false;
+					field.activated = false;
+				}) */
+			}
+		}).mount('.sample');
+	</script>
+</body>
+
+</html>

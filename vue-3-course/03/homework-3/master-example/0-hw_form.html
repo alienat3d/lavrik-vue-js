@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>1</title>
+	<link rel="stylesheet" href="../../../../vendor/css/font-awesome.min.css">
+	<link href="../../../../vendor/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../../../../vendor/css/style.css" rel="stylesheet">
+	<script src="../../../../vendor/js/vue.global.js"></script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<form>
+				<div class="progress" role="progressbar" aria-label="Fields filled progress" aria-valuenow="25"
+					aria-valuemin="0" aria-valuemax="100">
+					<div class="progress-bar" :style="progressStyles"></div>
+				</div>
+				<div class="my-3">
+					<!-- <div class="form-group" v-for="field,i in info">
+						<label>
+							{{ field.label }}
+							<span v-if="field.activated"
+								:class="field.valid ? 'fa fa-check-circle text-success' : 'fa fa-exclamation-circle text-danger'"></span>
+						</label>
+						<input type="text" class="form-control" :value="field.value" @input="onInput(i, $event.target.value)">
+					</div> -->
+					<!-- 1.4 А теперь попробуем применить новый компонент с "v-for", а также проставить все необходимые параметры из пропсов динамически v-bind. Также не забудем про :key. ↓ -->
+					<!-- 1.5.4 Итак у нас есть некая переменная $event (условно в onUpdate($event), хотя не обязательно так записывать), которая пока равна undefined, потому, что пока что при $emit... ↓ -->
+					<!-- 1.5.8 А теперь мы можем передать помимо $event также передать в метод "onUpdate" индекс элемента "i". ↓ -->
+					<app-input v-for="input,i in info" :key="i" :label="input.label" :value="input.value" :valid="input.valid"
+						@updated="onUpdate(i, $event)" />
+				</div>
+				<button class="btn btn-primary" :disabled="!isFormReady">
+					Отправить Данные
+				</button>
+			</form>
+			<pre>
+				{{ info }}
+			</pre>
+			<div>
+				<table class="table table-bordered">
+					<tr>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script>
+		// ? На вопрос «Что записывать в "props", а что в "data" однозначного ответа нет и это остаётся на совести архитектора системы. Но нужно стараться сделать компонент максимально удобным, расширяемым и изолированным от внешнего мира.
+		// * 1.0 Начнём продумывать наш компонент инпута с пропсов, которые принимать будут "label" для отображения текста лейбла. А также ещё будут поля "value" и "valid".
+		// 1.1 Валидация у нас будет на уровне родительского комп., так будет удобнее на случай, если нам понадобится сравнивать значение полей между собой (например, если у нас несколько полей для телефона или поля "Пароль" & "Подтвердите пароль").
+		// 1.2 Поле "activated" оставим на уровне дочернего комп., так будет логичнее, ведь в родительском теге эти данные нужны не будут.
+		const AppInput = {
+			props: {
+				label: { type: String, required: true },
+				value: { type: String, required: true },
+				valid: { type: Boolean, required: true },
+			},
+			// ? 1.3 В данном случае сделать "data" стрелкой было бы плохой идеей, т.к. "data" захочет посмотреть активировано или не активировано поле на основе стартового "value", а мы делаем всё по аналогии с действиями с прошлого урока в приложении "Трекера привычек". ↑
+			data() {
+				return {
+					activated: this.value !== ''
+				}
+			},
+			// 1.5.1 Создадим специальный метод "onInput", который примет объект ивент.
+			methods: {
+				// 1.5.7 Но дочерний элемент понятия не имеет о своём индексе, он не знает, что был размножен каким-то циклом. Может этот же комп. инпут ещё используют много где в других местах, поэтому он знать ни о каком своём ключе не должен. Он знает лишь о том, что находится на его уровне ответственности, а там нет ничего, кроме текущего значения "evt.target.value". ↑
+				onInput(evt) {
+					this.activated = true
+					// 1.5.2 И не боимся каждый шаг тестировать, т.к. это ключ к успеху в программировании.
+					// console.log(evt.target.value);
+					// 1.5.3 Затем мы как на прошлом уроке пишем this.$emit(название события). И вот вспоминая прошлый урок и пример с "Трекером привычек", у нас в $emit был также закомментированный объект, в который мы могли бы что-то передать и это попадёт в $event. ↑
+					// 1.5.5 ... у нас ничего не указано вторым параметром. Но если мы напишем здесь что-то вторым параметром, то это автоматическим попадёт в $event (даже если мы этот $event не будем прописывать в () события выше.) Теперь надо подумать, а что мы хотим передавать от дочернего комп. родительскому, чтобы родительский комп. смог понять валидно поле или нет? И ответ: "value" & "i". ↓
+					this.$emit('updated', evt.target.value)
+				}
+			},
+			// 1.5.0 Итак, займёмся ивентами. Для этого мы подпишемся на "input"-ивент и про "ленивость" полей речь не шла, поэтому подпишемся не на "change", а на "input". Также тут нет никакого смысла ставить "v-model" на параметр "value", это ошибка, т.к. мы не имеем права мутировать пропс, вспомним, что они в "readonly". Поэтому мы можем только эмитом родительскому компоненту выкинуть какой-то ивент. И мы могли бы прописать эмит прямо здесь, но в шаблоне это читается не очень хорошо и лучше вынести его в methods поля. ↓
+			template: `
+				<div class="form-group">
+					<label>
+						{{ label }}
+						<span v-if="activated" :class="valid ? 'fa fa-check-circle text-success' : 'fa fa-exclamation-circle text-danger'"></span>
+					</label>
+					<input type="text" class="form-control" :value="value" @input="onInput">
+				</div>
+			`
+		}
+
+		Vue.createApp({
+			components: {
+				AppInput
+			},
+			data: () => ({
+				info: [
+					{
+						label: 'Name',
+						value: '',
+						pattern: /^[a-zA-Z ]{2,30}$/
+					},
+					{
+						label: 'Phone',
+						value: '+',
+						pattern: /^\+{1}[0-9]{11}$/
+					},
+					{
+						label: 'Email',
+						value: '',
+						pattern: /.+/
+					},
+					{
+						label: 'Some Field 1',
+						value: '',
+						pattern: /.+/
+					},
+					{
+						label: 'Some Field 2',
+						value: '',
+						pattern: /.+/
+					}
+				]
+			}),
+			// 1.7.0 Что касается прогрессбара, как индикатор количества валидных полей, создадим computed поле fieldsDone, где к info применим метод reduce, начнём с нуля. Total у нас будет аккумуляторной переменной и по тернарнику будем или не будем прибавлять к нему 1.
+			computed: {
+				fieldsDone() {
+					// return this.info.reduce((total, field) => total + (field.valid ? 1 : 0), 0)
+					// 1.7.1 Возможна запись и через метод "filter":
+					// Go to [vue-3-course\03\homework-3\master-example\1-hw_form-alter.html]
+					return this.info.filter(field => field.valid).length
+				},
+				progressStyles() {
+					return { width: (this.fieldsDone / this.info.length) * 100 + '%' }
+				},
+				// 1.8 Понятно, что ">" вряд ли когда-нибудь будет, но разницы нет написать так или строгое равенство.
+				isFormReady() {
+					return this.fieldsDone >= this.info.length
+				}
+			},
+			methods: {
+				// 1.5.6 Это то, что понадобится в методе "onUpdate", чтобы родительскому компоненту обновить конкретное поле. ↑
+				// 1.5.9 И теперь мы можем спроектировать метод "onUpdate" таким образом, чтобы он принимал индекс элемент, а также новое "value" этого элемента.
+				// ? 1.5.10 Но главный фокус здесь заключается в том, что метод onUpdate запускается с параметрами, пришедшими с разных уровней компонентов. Параметр "i" родительский комп. готовит для себя и метод "onUpdate" при вызове видит его по условному замыканию, а "$event" приходит от дочернего в момент наступления этого ивента.
+				// 1.6 Ну и дальше идёт весь тот же код, за исключением того, что мы перестаём думать про ключ "activated". Вы находим это поле в "info", записываем туда "value" обновлённое и применяем метод "trim" на него, а затем валидируем его с помощью метода "test" и подходящего regExp. ↑
+				onUpdate(i, val) {
+					const field = this.info[i]
+					field.value = val.trim()
+					// field.activated = true
+					field.valid = field.pattern.test(field.value)
+				}
+			},
+			created() {
+				this.info.forEach(field => {
+					field.valid = false
+					field.activated = false
+				})
+			}
+		}).mount('.sample')
+	</script>
+</body>
+
+</html>

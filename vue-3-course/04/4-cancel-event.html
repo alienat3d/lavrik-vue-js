@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>1</title>
+	<link rel="stylesheet" href="../../../../vendor/css/font-awesome.min.css">
+	<link href="../../../../vendor/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../../../../vendor/css/style.css" rel="stylesheet">
+	<script src="../../../../vendor/js/vue.global.js"></script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<form>
+				<div class="progress" role="progressbar" aria-label="Fields filled progress" aria-valuenow="25"
+					aria-valuemin="0" aria-valuemax="100">
+					<div class="progress-bar" :style="progressStyles"></div>
+				</div>
+				<div class="my-3">
+					<!-- * 4.0.0 Но представим ситуацию, когда стоит задача событие именно назвать "input", а нам мешает нативный всплывающий инпут. Для этого во Vue 3 есть механика валидации ивентов перед их отправкой наверх. ↓ -->
+					<app-input v-for="input,i in info" :key="i" :label="input.label" :value="input.value" :valid="input.valid"
+						@input="onUpdate(i, $event)" />
+				</div>
+				<button class="btn btn-primary" :disabled="!isFormReady">
+					Отправить Данные
+				</button>
+			</form>
+			<pre>
+				{{ info }}
+			</pre>
+			<div>
+				<table class="table table-bordered">
+					<tr>
+						<td></td>
+						<td></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script>
+		const AppInput = {
+			props: {
+				label: { type: String, required: true },
+				value: { type: String, required: true },
+				valid: { type: Boolean, required: true },
+			},
+			// 4.0.1 Есть специальный раздел "emits", который специально для этого прописывается. И логика здесь такая: прописываем название ивента и функцию-валидатор, которая будет возвращать true/false, надо посылать это событие вверх или нет. Можно вписать "null" — это будет значит, что событие нативное посылаться вверх больше не станет.
+			emits: {
+				input: null
+			},
+			data() {
+				return {
+					activated: this.value !== ''
+				}
+			},
+			// 4.0.1 Это значит, что мы можем здесь эмитировать "input" ивент. На то был у создателей Vue 3 расчёт, что будет описательная пара из props и emits. По сути это принудительный откат к поведению стандартных событий во Vue 2.
+			methods: {
+				onInput(evt) {
+					this.activated = true
+					this.$emit('input', evt.target.value)
+				}
+			},
+			template: `
+				<div class="form-group">
+					<label>
+						{{ label }}
+						<span v-if="activated" :class="valid ? 'fa fa-check-circle text-success' : 'fa fa-exclamation-circle text-danger'"></span>
+					</label>
+					<input type="text" class="form-control" :value="value" @input="onInput">
+				</div>
+			`
+		}
+
+		Vue.createApp({
+			components: {
+				AppInput
+			},
+			data: () => ({
+				info: [
+					{
+						label: 'Name',
+						value: '',
+						pattern: /^[a-zA-Z ]{2,30}$/
+					},
+					{
+						label: 'Phone',
+						value: '+',
+						pattern: /^\+{1}[0-9]{11}$/
+					},
+					{
+						label: 'Email',
+						value: '',
+						pattern: /.+/
+					},
+					{
+						label: 'Some Field 1',
+						value: '',
+						pattern: /.+/
+					},
+					{
+						label: 'Some Field 2',
+						value: '',
+						pattern: /.+/
+					}
+				]
+			}),
+			computed: {
+				fieldsDone() {
+					return this.info.filter(field => field.valid).length
+				},
+				progressStyles() {
+					return { width: (this.fieldsDone / this.info.length) * 100 + '%' }
+				},
+				isFormReady() {
+					return this.fieldsDone >= this.info.length
+				}
+			},
+			methods: {
+				onUpdate(i, val) {
+					console.log(val);
+					const field = this.info[i]
+					field.value = val.trim()
+					field.valid = field.pattern.test(field.value)
+				}
+			},
+			created() {
+				this.info.forEach(field => {
+					field.valid = false
+					field.activated = false
+				})
+			}
+		}).mount('.sample')
+	</script>
+</body>
+
+</html>
