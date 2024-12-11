@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>1</title>
+	<link href="../../vendor/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../../vendor/css/style.css" rel="stylesheet">
+	<script src="../../vendor/js/vue.global.js"></script>
+</head>
+<!-- ? 1.0 Тема слотов довольно короткая, но при этом важная. Что такое «слоты»? Допустим, что мы хотим сделать какой-то компонент «app-alert», чтобы он выводил окошки с информацией пользователю и у них есть title, content и кнопка "Ok". ↓ -->
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut incidunt aspernatur voluptatem! Facilis qui,
+				consequuntur vel ipsa hic necessitatibus repellat facere delectus nostrum, veniam reiciendis nobis, ratione
+				accusamus vitae fugit.</p>
+			<!-- 1.5.1 В темплейте самого комп. это выводится элементарно "усатым" синтаксисом. А как быть с алёртом? -->
+			<p>Total: {{ total }}, items: {{ items }}</p>
+			<hr>
+			<!-- 1.3.0 И ещё у нас есть родительский комп., который этот "app-alert", глобально зарегистрированный пытается использовать. Ему мы укажем какой-то title и content, а также "color" для стиля цвета окошка, который будет подставляться с помощью computed-поля. ↓ -->
+			<!-- 1.5.2 Мы конечно можем попробовать запихнуть эти данные в "content" таким вот образом: -->
+			<!-- <app-alert title="Hello, user!" :content="`You’ve bought so far ${items} things for total $${total}`" color="primary"></app-alert> -->
+			<!-- 1.5.3 И вроде всё работает, но следующая задача уже будет практически неразрешимой: что, если нам нужно в "content" записать пару строк, где каждая будет в своём абзаце, а "total" & "items" надо ещё и в тег <strong> выделить. И здесь начнутся проблемы, т.к. каждый тег, который мы здесь пропишем - будет заэкранирован, т.е. Vue не отобразит HTML, а отобразит как текстовое содержимое. Это сделано из соображений безопасности. И ладно, если бы это было просто алёрт, где редко бывают такие случаи, но в случае с модальным окном это уже не редкость, там могут быть вполне целые куски HTML-кода с какой-нибудь таблицей, например. И вот у нас возникла проблема, что, хотя у нас есть презентационный комп., который умеет оформлять данные из родительского комп. так как нужно, но получить он может лишь простые данные, строчные или числовые, а кусок HTML-кода передать мы уже не в состоянии. ↓ -->
+			<!-- 1.6.1 И теперь атрибут "content" у нас больше не передаётся, а содержимое мы пишем между парными тегами компонента. И то, что записано между этими парными тегами этого дочернего компонента доступно в родительской зоне видимости. Сюда попадают пропсы родителя и здесь работают ивенты из родительского компонента. ↓ -->
+			<!-- 1.6.3 И контент именованного слота мы также можем заменить, если пропишем тег "<template>" и в него директиву "v-slot", в которую передаём название слота "footer". Также мы можем сократить до "#footer". -->
+			<app-alert title="Hello, user">
+				<p>Total: {{ total }}</p>
+				<p>Items: {{ items }}</p>
+				<template v-slot:footer>
+					<button type="button" class="btn btn-danger mr-1" @click="reset">Reset</button>
+					<button type="button" class="btn btn-primary mx-3">Send</button>
+				</template>
+			</app-alert>
+			<hr>
+			<!-- <app-alert title="Hello, user" color="danger"></app-alert> -->
+		</div>
+	</div>
+	<script>
+		// 1.4 А как нам в этот алёрт что-то передать, например, на странице оформления заказа мы хотим пользователю подсветить, чтобы не просто написать, что у вас в корзине столько-то вещей на такую-то сумму, а ещё и передать это в алёрт?
+		// 1.5.0 Запишем в родительский комп., что у нас есть какое-то число "total" на 5000 ед. и какое-то кол-во элементов "items". ↑
+		let app = Vue.createApp({
+			data: () => ({
+				total: 5000,
+				items: 3
+			}),
+			methods: {
+				reset() {
+					this.total = 0;
+					this.items = 0;
+				}
+			}
+		});
+
+		// 1.1 Ну и соответственно сказанному выше принимать этот комп. должен следующие пропсы: title, который будет строкой и какой-то контент, который тоже является строкой. И ещё тип алёрта, который будет менять этому окошку цвет.
+		// 1.6.0 К счастья решается эта проблема довольно легко. Во-первых, мы можем избавится от пропа "content" и вместо него использовать концепцию "слота". Мы в шаблоне дочернего комп. пишем тег "<slot>". ↑
+		app.component('app-alert', {
+			props: {
+				title: String,
+				content: String,
+				color: { type: String, default: 'success' }
+			},
+			// 1.2 "title" у нас выводится сюда, также и content будем выводить чуть ниже. ↑
+			// 1.6.2 И кстати во Vue слотов может быть > 1. Мы можем, например, добавить здесь ещё один slot с атрибутом "footer". ↑
+			template: `
+		<div class="alert" :class="classes">
+			<h4>{{ title }}</h4>
+			<hr>
+			<div>
+				<slot></slot>
+			</div>
+			<hr>
+			<slot name="footer">
+				<button type="button" class="btn btn-primary" @click="$emit('ok')">Ok</button>
+			</slot>	
+		</div>
+	`,
+			// 1.3.1 Возвращаем новый класс, в зависимости от вписанного значения ":color". ↑
+			computed: {
+				classes() {
+					return 'alert-' + this.color;
+				}
+			}
+		});
+
+		app.mount('.sample');
+
+	</script>
+</body>
+
+</html>

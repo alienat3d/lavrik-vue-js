@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>1</title>
+	<link href="../../vendor/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../../vendor/css/style.css" rel="stylesheet">
+	<script src="../../vendor/js/vue.global.js"></script>
+</head>
+<!-- * 1.0 С animation всё куда проще, чем с transition. И так будут делать в 95% случаев. Оставляем только ".fade-enter-active" & ".fade-leave-active", где мы укажем настройки анимации, а также подготавливаем keyframes с чекпоинтами анимации. Также в animation намного проще добавлять какие-то доп. свойства, например, допишем ещё translateX, сделав анимацию чуть более оригинальной. -->
+<style>
+	.sample {
+		overflow-x: hidden;
+	}
+
+	.fade-enter-active {
+		animation: fadeIn 0.5s;
+	}
+
+	.fade-leave-active {
+		animation: fadeOut 0.5s;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateX(-100px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	@keyframes fadeOut {
+		from {
+			opacity: 1;
+			transform: translateX(0);
+		}
+
+		to {
+			opacity: 0;
+			transform: translateX(100px);
+		}
+	}
+</style>
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<button class="btn btn-primary" @click="showAlert = !showAlert">Toggle alert</button>
+			<hr>
+			<transition name="fade">
+				<div class="alert alert-success" v-show="showAlert">
+					<p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempore porro maiores, id quibusdam asperiores
+						ullam voluptate totam perspiciatis dolores odit eligendi, reprehenderit vel? Laudantium quo repellendus
+						voluptatum, laboriosam eos cupiditate.</p>
+				</div>
+			</transition>
+		</div>
+	</div>
+	<script>
+
+		let app = Vue.createApp({
+			data: () => ({
+				showAlert: false
+			})
+		});
+
+		app.mount('.sample');
+
+	</script>
+</body>
+
+</html>
