@@ -15,13 +15,13 @@
 		overflow: hidden;
 	}
 </style>
-<!-- * 1.0 Также стоит вспомнить, что если библиотеки анимаций, например "Animate CSS". -->
 
 <body>
 	<div class="wrapper">
 		<div class="sample">
 			<button class="btn btn-primary" @click="showAlert = !showAlert">Toggle alert</button>
 			<hr>
+			<!-- * 1.0 Также стоит вспомнить, что если библиотеки анимаций, например "Animate CSS". Её мы подключили файлом выше и теперь можем применять классами добавляя к элементу transition. Где у нас соответственно в enter-active-class будет лежать стартовая анимация, а в leave-active-class конечная. -->
 			<transition enter-active-class="animate__animated animate__tada"
 				leave-active-class="animate__animated animate__fadeOutLeft">
 				<div class="alert alert-success" v-show="showAlert">
