@@ -1,9 +1,10 @@
 <template>
-  <div class="container mt-2">
+  <div class="container mt-3">
     <form @submit.prevent="sendForm" v-if="!formDone">
       <app-progress :current="fieldDone" :max="info.length" />
-      <div>
+      <div class="mt-3">
         <app-field
+          class="mt-2"
           v-for="(field, i) in info"
           :key="i"
           :label="field.label"
@@ -12,31 +13,48 @@
           @updated="onUpdate(i, $event)"
         ></app-field>
       </div>
-      <button class="btn btn-primary" :disabled="!formReady">Send Data</button>
+      <div class="text-center">
+        <button class="btn btn-primary mt-4" :disabled="!formReady">
+          Send Data
+        </button>
+      </div>
     </form>
     <div v-else>
-      <table class="table table-bordered">
-        <tbody>
-          <tr v-for="(field, i) in info" :key="i">
-            <td>{{ field.label }}</td>
-            <td>{{ field.value }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <h2>All done!</h2>
     </div>
-    <vue-final-modal v-model="showModal" name="example">
-      Modal content
+    <!-- * 3.0 Подключим стороннюю библиотеку с модальным окном и перенесём в него таблицу, как нам нужно из Т3. А на месте таблицы будет фраза "All done!" -->
+    <vue-final-modal v-model="showModal">
+      <div class="container p-2 mt-4 modal-inner">
+        <table class="table table-bordered">
+          <tbody>
+            <tr v-for="(field, i) in info" :key="i">
+              <td>{{ field.label }}</td>
+              <td>{{ field.value }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <hr />
+        <div class="text-center">
+          <button class="btn btn-success me-3" @click="onConfirm">Ok</button>
+          <button class="btn btn-danger" @click="showModal = false">
+            Cancel
+          </button>
+        </div>
+      </div>
     </vue-final-modal>
-    <button @click="openModalExample">Open Modal</button>
   </div>
 </template>
 
 <script>
-import 'vue-final-modal/style.css';
-
+import { VueFinalModal } from 'vue-final-modal';
+// ? Важно помнить, что хотя мы можем называть файлы компонентов одним словом, но их константа, в которую мы их импортируем должна состоять хотя бы из 2-ух слов, например "AppField" или "AppProgress", чтобы случайно не попасть в HTML-теги или другие Vue-сущности.
+/* Точнее даже речь именно про само имя используемого компонента, например: 
+import b from './components/A.vue'
+...
+components: { AppField: b }
+*/
 import AppField from './components/Field';
 import AppProgress from './components/Progress';
-import { VueFinalModal } from 'vue-final-modal';
 
 export default {
   components: { AppField, AppProgress, VueFinalModal },
@@ -68,6 +86,7 @@ export default {
         pattern: /.+/,
       },
     ],
+    showModal: false,
     formDone: false,
   }),
   computed: {
@@ -91,8 +110,12 @@ export default {
     },
     sendForm() {
       if (this.formReady) {
-        this.formDone = true;
+        this.showModal = true;
       }
+    },
+    onConfirm() {
+      this.showModal = false;
+      this.formDone = true;
     },
   },
   created() {
@@ -102,3 +125,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.modal-box {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+}
+</style>
