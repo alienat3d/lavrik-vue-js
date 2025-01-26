@@ -1,0 +1,3 @@
+[Todo]:
+	- (vue-3-course\07\src\components\ProductsList.vue)[ln7] Отрефакторить, чтобы циклом размножалась не вёрстка, а отдельный компонент productCard;
+	- (vue-3-course\07\src\store\cart.js)[ln45] Реализовать механику с массивом "inProcess";

@@ -1,16 +1,21 @@
 <template>
-	<div>
-		<h1>Cart</h1>
-		<hr>
-		<div>table</div>
-		<router-link class="btn btn-success" :to="{ name: 'checkout' }">
+  <div>
+    <h1>Cart</h1>
+    <hr />
+    <div>table</div>
+    <!-- * 2.0 Зачем же нам именованные рауты? Может так случиться, что ссылки будут где-то дублироваться Представим, что в корзине у нас есть кнопка-ссылка для перехода на страницу заказа. И тут могут возникнуть затруднения, например, если попросят поменять ссылку с "checkout" на "order". И тогда придётся идти во всём приложении искать все пути "/checkout" менять на "/order". Хотя такое случается не так часто, но в действительно крупных проектах этом может быть не очень приятным занятием. В добавок есть риск где-то забыть исправить и битую ссылку получить. -->
+    <!-- Go to [vue-3-course\07\src\router.js] -->
+    <!-- <router-link class="btn btn-success" to="/checkout">
 			Order now
-		</router-link>
-	</div>
+    </router-link> -->
+    <!-- 2.2 И теперь мы в to будем прописывать не путь, а динамический параметр с объектом. -->
+    <!-- Go to [vue-3-course\07\src\App.js] -->
+    <router-link class="btn btn-success" :to="{ name: 'checkout' }">
+      Order now
+    </router-link>
+  </div>
 </template>
 
 <script>
-	export default {
-
-	}
+export default {};
 </script>
