@@ -7,9 +7,12 @@
             <h1>Site</h1>
           </div>
           <!-- 8.13.1 Выводи кол-во товаров в вёрстку. -->
+          <!-- 11.3 И поместим вывод общей цены сюда. -->
+          <!-- Go to [vue-3-course\07\src\components\Cart.vue] -->
           <div class="col col-sm-3">
             <div class="alert alert-default">
-              <div>In Cart: {{ $store.getters['cart/length'] }}</div>
+              <div>Items in cart: {{ $store.getters['cart/length'] }}</div>
+              <div>Items total price: ${{ $store.getters['cart/total'] }}</div>
             </div>
           </div>
         </div>
@@ -73,6 +76,11 @@ export default {
 </script>
 
 <style>
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 .menu {
   border-right: 1px solid #ddd;
 }

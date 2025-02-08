@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Products</h1>
+    <h1 class="text-center">Products</h1>
     <div class="row">
       <!-- 7.1 Ну и рендерим мы циклом "v-for", забирая информацию из productList, которая опрашивает данные из модуля хранилища "products.js" соответственно. -->
       <!-- ? По хорошему тут надо отрефакторить, чтобы циклом размножалась не вёрстка, а отдельный компонент productCard. -->
@@ -9,18 +9,22 @@
         v-for="pr in productList"
         :key="pr.id"
       >
-        <div class="card">
-          <div class="card-body">
-            <h3>{{ pr.title }}</h3>
-            <div>{{ pr.price }}</div>
+        <div class="card" style="min-height: 525px">
+          <div
+            class="card-body d-flex flex-column align-items-center text-center py-4 px-3"
+          >
+            <img class="mb-4" :src="'./img/products/' + pr.pic" />
+            <h3 class="mb-4 mb-auto">{{ pr.title }}</h3>
+            <div class="card__price mb-4">$ {{ pr.price }}</div>
             <!-- 7.2.0 Теперь как мы делаем кнопку добавления в корзину и ссылку на информацию о товаре. Начнём с ссылки на инфо о товаре. Сперва приходит в голову сделать что-то вроде такого: -->
             <!-- <router-link :to="`/product/${pr.id}`">Read more</router-link> -->
             <!-- 7.2.1 Но вместо этого удобнее будет использовать именованный раут, почему мы только что узнали, когда создавали такие рауты. И выглядеть он будет здесь следующим образом: в :to указываем "name" раута, на который ссылаемся, а также передать туда объект params с содержимым id, т.е. сколько дырок в адресе — столько нужно объектов в params передать. -->
             <!-- Go to [vue-3-course\07\src\store\cart.js] -->
-            <router-link :to="{ name: 'product', params: { id: pr.id } }"
+            <router-link
+              class="mb-4"
+              :to="{ name: 'product', params: { id: pr.id } }"
               >Read more</router-link
             >
-            <hr />
             <!-- 8.6 Ну, а теперь можно начать реализовывать собственно кнопки корзины, где у нас видно практическое применение геттера "inCart". Если попавший в функцию геттера id (т.е. соответствующий тому артикулу по кнопке которого пользователь кликнул) соответствует имеющемуся в стейте, то он удаляется из стейта, иначе наоборот добавляется. -->
             <!-- Go to [vue-3-course\07\src\store\cart.js] -->
             <!-- 8.10.2 Ну и в итоге мы можем подписаться на событие клик и добавить наши экшены в них, передавая в них id товара. -->
@@ -77,3 +81,9 @@ export default {
 	<router-link :to="'/product/' + pr.id">Read more</router-link>
 */
 </script>
+<style scoped>
+.card__price {
+  font-size: 22px;
+  font-weight: 600;
+}
+</style>

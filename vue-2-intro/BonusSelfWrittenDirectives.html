@@ -1,0 +1,86 @@
+<!-- * 14.0 «Самописные директивы во Vue» -->
+<!-- ? 14.1 Сразу стоит оговориться, что в доке по Vue написано, что написание собственных директив не является приоритетным и рекомендуемым решением, лучше всегда стараться решать всё на уровне компонентов. Но всё же рассмотрим эту возможность, а то как знать — может когда-то пригодится. А также, чтобы на наглядном примере увидеть, что в директивах нет какой-то магии. -->
+<!-- 14.2 Здесь мы создадим собственную директиву ael (addEventListener). Это будем маленькой пародией на Vue директиву "v-on", чтобы понять как она по сути работает. -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<link href="../../vendor/css/bootstrap.min.css" rel="stylesheet">
+	<script src="../../vendor/js/vue.global.js"></script>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="sample">
+			<form action="">
+				<div class="alert-danger">{{i}}</div>
+				<hr>
+				<!-- ? Директивы можно сравнить с атрибутами HTML-элементов, но более сложные и продвинутые. -->
+				<!-- 14.5 в рамках любой директивы есть несколько вещей: 
+					-> значение директивы или главный аргумент (то, что пишется в "" и анализируется, как кусочек JS-кода) и в рамках "bind" можно вытащить это через "options.value"; 
+					-> параметры, записываются после ":" (не все директивы, но многие нуждаются). К примеру, у директивы "v-bind" главным параметром является название свойства, которое нужно задать, а у директивы "v-on" главным параметром является название события; 
+					-> модификатор, записываются после "." (такие как "prevent", "once" и др.) -->
+				<button class="btn btn-success" v-ael:click.once.prevent="onTest">Test</button>
+			</form>
+		</div>
+	</div>
+</body>
+<!-- ? Код написан на Vue 2, для Vue 3 регистрируем директиву не у Vue, а у переменной app, которую возвращает Vue.createApp -->
+<!-- 14.3 А создаём мы любую директиву, если понадобится при помощи "Vue.directive", т.о. регистрируем директиву глобально. У неё есть несколько хуков: на подписку, на отписку, на апдейт, однако нас это сейчас не интересует. Но нас интересует хук с названием "bind". Этот хук срабатывает, когда директива срабатывает первый раз и привязывается к данному узлу (т.е. кнопке). -->
+<!-- 14.4 После этого Vue парсит эту директиву, вызывает "bind", куда передаёт первым параметром элемент DOM-дерева, а вторым передаёт options, т.е. что распарсилось из директивы элемента. ↑ -->
+<script>
+	Vue.directive('ael', {
+		bind(el, options) {
+			// 14.6 По сути функция занимается анализом значения, параметра и модификатора директивы и подставляет их в коллбэк-функцию:
+			let callback = function (e) {
+				if (options.modifiers.prevent) {
+					e.preventDefault();
+				}
+				if (options.modifiers.once) {
+					el.removeEventListener(options.arg, callback);
+				}
+
+				options.value(e);
+			}
+			// 14.5 И вот как эта директива будет работать:
+			el.addEventListener(options.arg, options.value);
+			/* console.log(el);
+			console.log(options); */
+		}
+	});
+
+	// 14.7 Локальные директивы работают также, только для одного экземпляра Vue и создаются внутри его объекта в секции "directives":
+	new Vue({
+		directives: {
+			ael: {
+				bind(el, options) {
+					let callback = function (e) {
+						if (options.modifiers.prevent) {
+							e.preventDefault();
+						}
+						if (options.modifiers.once) {
+							el.removeEventListener(options.arg, callback);
+						}
+
+						options.value(e);
+					}
+					el.addEventListener(options.arg, options.value);
+				}
+			}
+		},
+		el: '.sample',
+		data: {
+			i: 0
+		},
+		methods: {
+			onTest() {
+				this.i++;
+			}
+		}
+	});
+</script>
+
+</html>
